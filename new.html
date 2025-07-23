@@ -1,0 +1,586 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>John Doe - Cyber Developer</title>
+    <style>
+        /* styles.css */
+        body {
+          margin: 0;
+          font-family: 'Courier New', monospace;
+          background-color: #0a0f0d;
+          color: #00ff9f;
+          scroll-behavior: smooth;
+          opacity: 0;
+          transition: opacity 1s ease-in;
+        }
+        body.loaded {
+          opacity: 1;
+        }
+
+        nav {
+          background: #111;
+          padding: 20px 40px;
+          position: sticky;
+          top: 0;
+          z-index: 1000;
+          box-shadow: 0 0 10px #00ff9f50;
+        }
+
+        nav ul {
+          list-style: none;
+          display: flex;
+          justify-content: center;
+          gap: 40px;
+          padding: 0;
+          margin: 0;
+          flex-wrap: wrap;
+        }
+
+        nav a {
+          text-decoration: none;
+          color: #00ff9f;
+          font-weight: bold;
+          font-size: 18px;
+          transition: color 0.3s;
+          position: relative;
+          padding-bottom: 5px;
+        }
+
+        nav a:hover, nav a.active {
+          color: #ffffff;
+          text-shadow: 0 0 5px #00ffcc, 0 0 10px #00ffcc;
+        }
+        
+        nav a::after {
+          content: '';
+          position: absolute;
+          width: 0%;
+          height: 2px;
+          bottom: 0;
+          left: 0;
+          background-color: #00ff9f;
+          transition: width 0.3s ease;
+        }
+
+        nav a.active::after, nav a:hover::after {
+          width: 100%;
+        }
+
+        .section {
+          padding: 60px 20px;
+          max-width: 1000px;
+          margin: auto;
+          border-bottom: 1px solid #00ff9f30;
+          opacity: 0;
+          transform: scale(0.95) translateY(40px);
+          transition: opacity 0.3s, transform 0.3s;
+        }
+
+        .section.show {
+          animation: fadeScale 0.8s ease-out forwards;
+        }
+        
+        @keyframes fadeScale {
+          from {
+            opacity: 0;
+            transform: scale(0.95) translateY(40px);
+          }
+          to {
+            opacity: 1;
+            transform: scale(1) translateY(0);
+          }
+        }
+
+        #home {
+          padding: 100px 20px 60px 20px;
+          text-align: center;
+          position: relative;
+          z-index: 1;
+        }
+
+        #home p {
+          text-align: center;
+          font-size: 1.2em;
+        }
+
+        .profile-container {
+          position: relative;
+          width: 220px;
+          height: 220px;
+          margin: 10px auto 20px auto;
+          border-radius: 100%;
+          padding: 10px; /* allows space for glow */
+          box-shadow: 0 0 20px #0ad8e69f;
+          animation: glowPulse 2.5s infinite ease-in-out;
+          background: radial-gradient(circle at center, #0a0f0d 60%, transparent 100%);
+        }
+
+        .profile {
+          width: 100%;
+          height: 100%;
+          border-radius: 100%;
+          object-fit: cover;
+          position: absolute;
+          top: 50%;
+          left: 50%;
+          transform: translate(-50%, -50%);
+          transition: opacity 0.5s ease-in-out;
+        }
+
+        .profile.hover {
+          opacity: 0;
+        }
+
+        .profile-container:hover .hover {
+          opacity: 1;
+        }
+
+        .profile-container:hover .default {
+          opacity: 0;
+        }
+
+        @keyframes glowPulse {
+          0%, 100% {
+            box-shadow: 0 0 15px #00ff9f80;
+          }
+          50% {
+            box-shadow: 0 0 25px #00ffd9aa;
+          }
+        }
+
+        #social-icons {
+          text-align: center;
+          margin-top: 40px;
+          margin-bottom: 40px;
+        }
+
+        #social-icons a {
+          margin: 0 15px;
+          display: inline-block;
+          transition: transform 0.3s;
+        }
+        
+        #social-icons a svg {
+          width: 30px;
+          height: 30px;
+          fill: #00ff9f;
+          filter: drop-shadow(0 0 3px #00ff9f);
+        }
+
+        #social-icons a:hover {
+          transform: scale(1.1);
+        }
+        
+        #social-icons a:hover svg {
+           fill: #fff;
+           filter: drop-shadow(0 0 5px #fff);
+        }
+
+        h1, h2, h3 {
+          color: #00ff9f;
+          text-align: center;
+        }
+        
+        h1 { font-size: 2.5em; }
+        h2 { font-size: 2em; }
+        h3 { font-size: 1.5em; }
+
+        .skills-list {
+          display: flex;
+          flex-wrap: wrap;
+          justify-content: center;
+          gap: 20px;
+          list-style: none;
+          padding: 0;
+          margin-top: 30px;
+        }
+
+        .skills-list li {
+          background-color: #111;
+          border: 2px solid #00ff9f;
+          padding: 15px 25px;
+          font-weight: bold;
+          font-size: 1em;
+          border-radius: 10px;
+          box-shadow: 0 0 10px #00ff9f30;
+          transition: transform 0.3s, background-color 0.3s, box-shadow 0.3s;
+        }
+
+        .skills-list li:hover {
+          background-color: #00ff9f20;
+          transform: scale(1.05);
+          box-shadow: 0 0 12px #52dfd88c, inset 0 0 6px #00ff9f40;
+        }
+
+        .project-card {
+          background: rgba(17, 17, 17, 0.5);
+          backdrop-filter: blur(8px);
+          border: 1px solid #00ff9f30;
+          border-radius: 8px;
+          overflow: hidden;
+          margin-bottom: 30px;
+          box-shadow: 0 0 15px #00ff9f20;
+          transition: transform 0.3s, box-shadow 0.3s;
+          display: flex;
+          flex-direction: column;
+        }
+
+        .project-card:hover {
+          transform: translateY(-5px);
+          box-shadow: 0 5px 25px #00ff9f30;
+        }
+
+        .project-card img {
+          width: 100%;
+          height: 220px;
+          object-fit: cover;
+          border-bottom: 1px solid #00ff9f30;
+        }
+
+        .card-content {
+          padding: 20px;
+        }
+
+        .card-content .project-link {
+          display: inline-block;
+          margin-top: 15px;
+          color: #00ff9f;
+          text-decoration: underline;
+          font-weight: bold;
+        }
+        
+        .card-content .project-link:hover {
+            color: #fff;
+        }
+
+        @media (min-width: 768px) {
+          .project-card {
+            flex-direction: row;
+          }
+
+          .project-card img {
+            width: 300px;
+            height: auto;
+            border-bottom: none;
+            border-right: 1px solid #00ff9f30;
+          }
+
+          .card-content {
+            flex: 1;
+          }
+        }
+        
+        #resume {
+          background: #111;
+          border-radius: 12px;
+          box-shadow: 0 0 18px #00ff9f30;
+          padding: 50px 20px 40px 20px;
+          margin: 40px auto;
+          max-width: 700px;
+          text-align: center;
+          border: 2px solid #00ff9f40;
+        }
+
+        #resume.show {
+          box-shadow: 0 0 25px #00ff9f70;
+          transition: box-shadow 0.5s ease-in-out;
+        }
+
+        #resume p {
+          font-size: 1.1em;
+          margin-bottom: 30px;
+        }
+
+        .resume-btn a {
+          background: #00ff9f;
+          color: #111;
+          border: none;
+          border-radius: 8px;
+          padding: 14px 32px;
+          font-size: 1.1em;
+          font-weight: bold;
+          cursor: pointer;
+          box-shadow: 0 0 10px #00ff9f80;
+          transition: background 0.3s, color 0.3s, transform 0.2s, box-shadow 0.3s;
+          text-decoration: none;
+          display: inline-block;
+        }
+
+        .resume-btn a:hover {
+          background: #111;
+          color: #00ff9f;
+          transform: scale(1.06);
+          box-shadow: 0 0 18px #00ff9faa;
+          border: 1px solid #00ff9f;
+        }
+
+        #contact {
+          text-align: center;
+        }
+
+        #contact-form {
+          display: flex;
+          flex-direction: column;
+          align-items: center;
+          gap: 15px;
+          margin-top: 30px;
+        }
+        
+        #contact-form input,
+        #contact-form textarea {
+          width: 100%;
+          max-width: 500px;
+          padding: 15px;
+          border: 2px solid #00ff9f;
+          background: #0a0f0d;
+          color: #00ff9f;
+          font-family: inherit;
+          border-radius: 8px;
+          font-size: 1em;
+        }
+        
+        #contact-form input:focus,
+        #contact-form textarea:focus {
+            outline: none;
+            box-shadow: 0 0 10px #00ff9f80;
+        }
+
+        #contact-form button {
+          margin-top: 20px;
+          border-radius: 6px;
+          background: transparent;
+          border: 2px solid #00ff9f;
+          color: #00ff9f;
+          font-weight: bold;
+          padding: 12px 25px;
+          cursor: pointer;
+          transition: background 0.3s, box-shadow 0.3s;
+          font-size: 1em;
+        }
+
+        #contact-form button:hover {
+          background: #00ff9f30;
+          box-shadow: 0 0 10px #00ff9f80;
+        }
+        
+        #status-msg { 
+            text-align: center; 
+            display: none; 
+            color: #00ff9f; 
+            margin-top: 20px;
+        }
+        
+        #progress-bar {
+          position: fixed;
+          top: 0;
+          left: 0;
+          height: 4px;
+          background: #00ff9f;
+          width: 0%;
+          z-index: 9999;
+          box-shadow: 0 0 10px #00ff9f;
+        }
+
+        #back-to-top {
+          position: fixed;
+          bottom: 30px;
+          right: 30px;
+          z-index: 999;
+          display: none;
+          background-color: #0a0f0d;
+          color: #00ff9f;
+          border: 2px solid #00ff9f;
+          border-radius: 50%;
+          width: 45px;
+          height: 45px;
+          font-size: 24px;
+          cursor: pointer;
+          box-shadow: 0 0 10px #00ff9f80;
+          transition: transform 0.3s, box-shadow 0.3s, background-color 0.3s;
+          line-height: 40px;
+        }
+
+        #back-to-top:hover {
+          transform: scale(1.1);
+          box-shadow: 0 0 15px #00ff9f;
+          background-color: #00ff9f20;
+        }
+    </style>
+</head>
+<body>
+
+    <div id="progress-bar"></div>
+
+    <nav>
+        <ul>
+            <li><a href="#home" class="nav-link">Home</a></li>
+            <li><a href="#about" class="nav-link">About</a></li>
+            <li><a href="#skills" class="nav-link">Skills</a></li>
+            <li><a href="#projects" class="nav-link">Projects</a></li>
+            <li><a href="#resume" class="nav-link">Resume</a></li>
+            <li><a href="#contact" class="nav-link">Contact</a></li>
+        </ul>
+    </nav>
+
+    <main>
+        <section id="home" class="section">
+            <div class="profile-container">
+                <img src="https://placehold.co/220x220/0a0f0d/00ff9f?text=JD" alt="Profile Picture" class="profile default">
+                <img src="https://placehold.co/220x220/00ff9f/0a0f0d?text=HIRE" alt="Hover Profile Picture" class="profile hover">
+            </div>
+            <h1>John Doe</h1>
+            <p>// A creative developer building things for the web. //</p>
+            <div id="social-icons">
+                <a href="https://github.com" target="_blank" rel="noopener noreferrer" aria-label="GitHub">
+                    <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.91 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"/></svg>
+                </a>
+                <a href="https://linkedin.com" target="_blank" rel="noopener noreferrer" aria-label="LinkedIn">
+                    <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M19 0h-14c-2.761 0-5 2.239-5 5v14c0 2.761 2.239 5 5 5h14c2.762 0 5-2.239 5-5v-14c0-2.761-2.238-5-5-5zm-11 19h-3v-11h3v11zm-1.5-12.268c-.966 0-1.75-.79-1.75-1.764s.784-1.764 1.75-1.764 1.75.79 1.75 1.764-.783 1.764-1.75 1.764zm13.5 12.268h-3v-5.604c0-3.368-4-3.113-4 0v5.604h-3v-11h3v1.765c1.396-2.586 7-2.777 7 2.476v6.759z"/></svg>
+                </a>
+            </div>
+        </section>
+
+        <section id="about" class="section">
+            <h2>[ About Me ]</h2>
+            <p style="text-align: center; max-width: 800px; margin: 0 auto; line-height: 1.6;">
+                Hello! I'm John, a frontend developer based in Durgapur, India. My journey into web development started back in 2022 when I decided to build a website for a local club — that's when I discovered my passion for coding and design. I specialize in JavaScript and have professional experience working with React and Next.js. I love crafting beautiful, functional, and user-centric websites. I'm a quick learner and always eager to expand my skillset with new technologies.
+            </p>
+        </section>
+
+        <section id="skills" class="section">
+            <h2>[ Tech Arsenal ]</h2>
+            <ul class="skills-list">
+                <li>HTML5</li>
+                <li>CSS3</li>
+                <li>JavaScript (ES6+)</li>
+                <li>React</li>
+                <li>Next.js</li>
+                <li>Vue.js</li>
+                <li>Node.js</li>
+                <li>Git</li>
+                <li>Figma</li>
+                <li>Firebase</li>
+            </ul>
+        </section>
+
+        <section id="projects" class="section">
+            <h2>[ Top Secret Projects ]</h2>
+            <div class="project-card">
+                <img src="https://placehold.co/600x440/0a0f0d/00ff9f?text=Project+Alpha" alt="Project Alpha">
+                <div class="card-content">
+                    <h3>E-commerce Platform</h3>
+                    <p>A full-featured e-commerce website built with React, featuring product search, cart functionality, and a mock checkout process.</p>
+                    <a href="#" class="project-link" target="_blank" rel="noopener noreferrer">> Access Live Site</a>
+                </div>
+            </div>
+            <div class="project-card">
+                <img src="https://placehold.co/600x440/0a0f0d/00ff9f?text=Project+Beta" alt="Project Beta">
+                <div class="card-content">
+                    <h3>Task Management App</h3>
+                    <p>A Kanban-style task management application with drag-and-drop functionality, built using Vue.js and a local storage backend.</p>
+                    <a href="#" class="project-link" target="_blank" rel="noopener noreferrer">> Access Live Site</a>
+                </div>
+            </div>
+        </section>
+        
+        <section id="resume" class="section">
+            <h2>[ Download My Resume ]</h2>
+            <p>Interested in my full profile? You can download a PDF version of my resume to see my complete work history, education, and more.</p>
+            <div class="resume-btn">
+                <a href="#" download="JohnDoe_Resume.pdf">> [ initiate_download.exe ]</a>
+            </div>
+        </section>
+
+        <section id="contact" class="section">
+            <h2>[ Establish Contact ]</h2>
+            <p>Have a project or question? I'd love to hear from you. Send a transmission.</p>
+            <form id="contact-form">
+                <input type="text" name="name" placeholder="Enter your callsign (Name)" required>
+                <input type="email" name="email" placeholder="Enter your frequency (Email)" required>
+                <textarea name="message" rows="5" placeholder="Enter your transmission (Message)" required></textarea>
+                <button type="submit">Send Message</button>
+            </form>
+            <p id="status-msg">Transmission successful. Stand by for response.</p>
+        </section>
+    </main>
+    
+    <button id="back-to-top" title="Go to top">^</button>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', (event) => {
+            // --- Body fade in on load ---
+            document.body.classList.add('loaded');
+
+            const sections = document.querySelectorAll('.section');
+            const navLinks = document.querySelectorAll('.nav-link');
+            const progressBar = document.getElementById('progress-bar');
+            const backToTopButton = document.getElementById('back-to-top');
+            
+            // --- Intersection Observer for section animations ---
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.classList.add('show');
+                    }
+                });
+            }, { threshold: 0.1 });
+
+            sections.forEach(section => {
+                observer.observe(section);
+            });
+            
+            // --- Scroll event for progress bar and active nav link ---
+            window.onscroll = () => {
+                // Progress bar
+                const scrollTop = document.documentElement.scrollTop || document.body.scrollTop;
+                const scrollHeight = document.documentElement.scrollHeight - document.documentElement.clientHeight;
+                const scrolled = (scrollTop / scrollHeight) * 100;
+                progressBar.style.width = scrolled + '%';
+
+                // Back to top button visibility
+                if (scrollTop > 300) {
+                    backToTopButton.style.display = 'block';
+                } else {
+                    backToTopButton.style.display = 'none';
+                }
+                
+                // Active nav link
+                let currentSection = '';
+                sections.forEach(section => {
+                    const sectionTop = section.offsetTop;
+                    if (scrollTop >= sectionTop - 100) {
+                        currentSection = section.getAttribute('id');
+                    }
+                });
+
+                navLinks.forEach(link => {
+                    link.classList.remove('active');
+                    if (link.getAttribute('href').substring(1) === currentSection) {
+                        link.classList.add('active');
+                    }
+                });
+            };
+            
+            // --- Back to top button click ---
+            backToTopButton.addEventListener('click', () => {
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+            });
+
+            // --- Contact form submission ---
+            const contactForm = document.getElementById('contact-form');
+            const statusMsg = document.getElementById('status-msg');
+            contactForm.addEventListener('submit', (e) => {
+                e.preventDefault();
+                // This is a dummy submission. In a real app, you'd send data to a server.
+                statusMsg.style.display = 'block';
+                contactForm.reset();
+                setTimeout(() => {
+                    statusMsg.style.display = 'none';
+                }, 4000);
+            });
+        });
+    </script>
+</body>
+</html>
